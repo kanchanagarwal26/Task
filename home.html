@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskHive</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+  <!-- Full-Width Container -->
+  <div class="min-h-screen flex flex-col bg-gray-900">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center bg-gray-800 p-6">
+      <div class="text-2xl font-bold">TaskHive</div>
+      <button  style="background-color: rgba(0, 122, 128, 0.696);"class=" hover:bg-purple-700 px-6 py-2 rounded-md" onclick="showCreateProjectModal()">+ Create Project</button>
+    </header>
+
+    <!-- Main Content Section -->
+    <main class="flex-grow p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- Upcoming Category -->
+        <div class="bg-gray-700 p-6 rounded-md shadow-lg">
+          <h3 class="text-xl font-semibold mb-4">Upcoming <span id="upcoming-status">(0)</span></h3>
+          <div id="upcoming-tasks" class="space-y-2"></div>
+          <button  style="color: rgba(0, 122, 128, 0.696);"class=" hover:text-purple-500" onclick="displayTasks('upcoming')">Show Tasks</button>
+        </div>
+
+        <!-- Overdue Category -->
+        <div class="bg-gray-700 p-6 rounded-md shadow-lg">
+          <h3 class="text-xl font-semibold mb-4">Overdue <span id="overdue-status">(0)</span></h3>
+          <div id="overdue-tasks" class="space-y-2"></div>
+          <button   style="color: rgba(0, 122, 128, 0.696);" class=" hover:text-purple-500" onclick="displayTasks('overdue')">Show Tasks</button>
+        </div>
+
+        <!-- Completed Category -->
+        <div class="bg-gray-700 p-6 rounded-md shadow-lg">
+          <h3 class="text-xl font-semibold mb-4">Completed <span id="completed-status">(0)</span></h3>
+          <div id="completed-tasks" class="space-y-2"></div>
+          <button  style="color: rgba(0, 122, 128, 0.696);" class="hover:text-purple-500" onclick="displayTasks('completed')">Show Tasks</button>
+        </div>
+      </div>
+
+      <!-- People Section -->
+      <div class="mt-8 bg-gray-800 p-6 rounded-md shadow-md">
+        <h2 class="text-2xl font-bold mb-4">People</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="flex items-center space-x-2">
+            <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="User Avatar" class="h-8 w-8 rounded-full">
+            <span class="text-gray-400">-</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="User Avatar" class="h-8 w-8 rounded-full">
+            <span class="text-gray-400">-</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="User Avatar" class="h-8 w-8 rounded-full">
+            <span class="text-gray-400">-</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <img src="https://randomuser.me/api/portraits/men/3.jpg" alt="User Avatar" class="h-8 w-8 rounded-full">
+            <span class="text-gray-400">-</span>
+          </div>
+        </div>
+        <div class="mt-4 text-center">
+          <button class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md" onclick="showInviteForm()">Invite your teammates to collaborate in TaskHive</button>
+        </div>
+      </div>
+
+      <!-- Invite Form Modal -->
+      <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden" id="invite-modal">
+        <div class="bg-gray-800 p-6 rounded-md shadow-md w-full max-w-md">
+          <h2 class="text-2xl font-bold mb-4">Invite Teammates</h2>
+          <div class="space-y-4">
+            <div>
+              <label for="email" class="block text-gray-400 mb-1">Teammate's Email</label>
+              <input type="email" id="email" class="bg-gray-700 p-2 rounded-md w-full" placeholder="Enter email address" required />
+            </div>
+            <div class="flex justify-end">
+              <button class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-md mr-2" onclick="sendInvitation()">Send Invitation</button>
+              <button class="bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-md" onclick="hideInviteForm()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Create Project Modal -->
+    <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden" id="create-project-modal">
+      <div class="bg-gray-800 p-6 rounded-md shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-4">Create a new project</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="project-name" class="block text-gray-400 mb-1">Project Name</label>
+            <input type="text" id="project-name" class="bg-gray-700 p-2 rounded-md w-full" placeholder="Enter project name" />
+          </div>
+          <div>
+            <label for="project-description" class="block text-gray-400 mb-1">Description</label>
+            <textarea id="project-description" class="bg-gray-700 p-2 rounded-md w-full" rows="3" placeholder="Enter project description"></textarea>
+          </div>
+          <div>
+            <label for="project-status" class="block text-gray-400 mb-1">Select Project Status</label>
+            <select id="project-status" class="bg-gray-700 p-2 rounded-md w-full">
+              <option value="upcoming">Upcoming</option>
+              <option value="overdue">Overdue</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <label for="project-priority" class="block text-gray-400 mb-1">Priority</label>
+            <select id="project-priority" class="bg-gray-700 p-2 rounded-md w-full">
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="flex justify-end">
+            <button  style="background-color: rgba(0, 122, 128, 0.696);"class=" hover:bg-purple-700 px-6 py-2 rounded-md mr-2" onclick="createProject()">Save</button>
+            <button style="background-color: rgba(0, 122, 128, 0.696);" class="bg-gray-700 hover:bg-gray-600 px-6 py-2 rounded-md" onclick="hideCreateProjectModal()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Show Invite Form
+    function showInviteForm() {
+      document.getElementById('invite-modal').classList.remove('hidden');
+    }
+
+    // Hide Invite Form
+    function hideInviteForm() {
+      document.getElementById('invite-modal').classList.add('hidden');
+    }
+
+    // Send Invitation Email
+    function sendInvitation() {
+      const email = document.getElementById('email').value;
+      if (validateEmail(email)) {
+        alert(`Invitation sent to ${email}`);
+        hideInviteForm();
+      } else {
+        alert('Please enter a valid email address');
+      }
+    }
+
+    // Basic email validation
+    function validateEmail(email) {
+      const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return re.test(String(email).toLowerCase());
+    }
+
+    let taskCounts = {
+      upcoming: 0,
+      overdue: 0,
+      completed: 0
+    };
+
+    // Show Create Project Modal
+    function showCreateProjectModal() {
+      document.getElementById('create-project-modal').classList.remove('hidden');
+    }
+
+    // Hide Create Project Modal
+    function hideCreateProjectModal() {
+      document.getElementById('create-project-modal').classList.add('hidden');
+    }
+
+    // Create Project and update task category counts
+    function createProject() {
+      const projectName = document.getElementById('project-name').value;
+      const projectDescription = document.getElementById('project-description').value;
+      const projectStatus = document.getElementById('project-status').value;
+      const projectPriority = document.getElementById('project-priority').value;
+
+      // Create a new task and add it to the respective category
+      addTaskToCategory(projectStatus, projectName, projectDescription, projectPriority);
+
+      // Hide the modal after creating the project
+      hideCreateProjectModal();
+    }
+
+    // Add task to the respective category and update the count
+    function addTaskToCategory(status, name, description, priority) {
+      const categoryElement = document.getElementById(`${status}-tasks`);
+      const statusElement = document.getElementById(`${status}-status`);
+
+      // Create a new task object with priority
+      const task = {
+        name: name,
+        description: description,
+        priority: priority
+      };
+
+      
+      // Sort tasks based on priority
+      sortTasksByPriority(categoryElement, task);
+
+      // Increment the task count
+      taskCounts[status] += 1;
+      statusElement.textContent = `${capitalizeFirstLetter(status)} (${taskCounts[status]})`;
+
+
+      // Show the tasks section if it's hidden
+      categoryElement.classList.remove('hidden');
+    }
+
+    // Sort tasks based on priority (high -> medium -> low)
+    function sortTasksByPriority(container, task) {
+      const taskElement = document.createElement('div');
+      taskElement.classList.add('p-2', 'bg-gray-600', 'rounded-md');
+      taskElement.innerHTML = `<strong>${task.name}</strong>: ${task.description} - <span class="text-${getPriorityColor(task.priority)}">${task.priority}</span>`;
+
+
+      const tasks = Array.from(container.children);
+      const sortedTasks = [...tasks, taskElement].sort((a, b) => {
+        const aPriority = a.querySelector('span').textContent;
+        const bPriority = b.querySelector('span').textContent;
+        return comparePriority(aPriority, bPriority);
+      });
+
+      container.innerHTML = ''; // Clear existing tasks
+      sortedTasks.forEach(task => container.appendChild(task));
+    }
+
+    // Compare priorities
+    function comparePriority(a, b) {
+      const priorityOrder = ['high', 'medium', 'low'];
+      return priorityOrder.indexOf(a) - priorityOrder.indexOf(b);
+    }
+
+    // Return color for priority
+    function getPriorityColor(priority) {
+      switch (priority) {
+        case 'high': return 'red-500';
+        case 'medium': return 'yellow-500';
+        case 'low': return 'green-500';
+        default: return 'gray-400';
+      }
+    }
+
+    // Display tasks of the selected category
+    function displayTasks(status) {
+      const tasksContainer = document.getElementById(`${status}-tasks`);
+      tasksContainer.classList.toggle('hidden');
+    }
+
+    // Capitalize the first letter of a string
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+  </script>
+</body>
+</html> 
